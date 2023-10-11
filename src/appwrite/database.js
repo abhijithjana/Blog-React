@@ -77,5 +77,6 @@ export class DatabasesService{
     }
 }
 }
+const databasesService=new DatabasesService();
 
-export default databasesService=new DatabasesService();
+export default databasesService;

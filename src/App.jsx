@@ -1,13 +1,29 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import config from './config/config'
+import authService from './appwrite/auth'
+import { login,logout } from './store/authslice'
+import {useDispatch} from 'react-redux'
 
 function App() {
-  const [count, setCount] = useState(0)
-  console.log(config);
-  return (
+ const [loading, setloading] = useState(true)
+ const dispatch=useDispatch();
+ useEffect(()=>{
+         authService.getCurrentUser()
+         .then((userdata)=>{
+          console.log("fggf");
+          if(userdata)
+             dispatch(login({userdata}))
+          else
+          dispatch(logout());
+         }).finally(()=>{
+          setloading(false);
+         })
+ },[]);
+
+  return !loading?
+     (
     <>
       <div>
         <a href="https://vitejs.dev" target="_blank">
@@ -18,19 +34,11 @@ function App() {
         </a>
       </div>
       <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+   
     </>
-  )
+  ):(<>
+  <h1>Loading</h1>
+  </>);
 }
 
 export default App
